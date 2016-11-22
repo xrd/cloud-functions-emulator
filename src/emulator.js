@@ -229,6 +229,8 @@ var self = {
         type = 'BACKGROUND';
       } else if (type === 'H') {
         type = 'HTTP';
+      } else if (type === 'S') {
+	type = 'STORAGE';
       }
 
       if (type === 'HTTP') {

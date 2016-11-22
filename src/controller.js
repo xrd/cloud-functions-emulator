@@ -379,9 +379,10 @@ var self = {
    * @param {String}  entryPoint The (case sensitive) name of the function to
    *                  be deployed.  This must be a function that is exported
    *                  from the host module
-   * @param {String}  type One of 'H' (HTTP) or 'B' (BACKGROUND).  This
-   *                  corresponds to the method used to invoke the function
-   *                  (HTTP or direct invocation with a context argument)
+   * @param {String}  type One of 'H' (HTTP) or 'B' (BACKGROUND) or 'S' (STORAGE).  
+   *                  This corresponds to the method used to invoke the function
+   *                  (HTTP trigger, storage bucket trigger, or direct invocation 
+   *                  with a context argument)
    * @param {Function} callback The callback function to be called upon
    *                   success/failure
    */
@@ -482,6 +483,30 @@ var self = {
     if (!data) {
       data = {};
     }
+
+    /**
+     * If this is a trigger-bucket type, then use something like this as the data
+     *
+     * How do we get that from the name?
+     *
+     { 
+     kind: 'storage#object',
+     resourceState: 'not_exists',
+     id: 'abcdef-150105-bucket/sample3.mov',
+     selfLink: 'https://www.googleapis.com/storage/v1/b/abcdef-150105-bucket/o/sample3.mov',
+     name: 'sample3.mov',
+     bucket: 'abcdef-150105-bucket',
+     generation: '1479794297769000',
+     metageneration: '1',
+     contentType: 'video/quicktime',
+     updated: '2016-11-22T05:58:17.760Z',
+     timeDeleted: '2016-11-22T06:04:17.998Z',
+     size: '4838590',
+     md5Hash: 'ODg1ZGNkZDZlMzNlMTZmMDgzNzQ0OTUyOGUzMDllOTg=',
+     mediaLink: 'https://www.googleapis.com/storage/v1/b/abcdef-150105-bucket/o/sample3.mov?generation=1479794297769000&alt=media',
+     crc32c: 'RS8o1Q==' 
+     }
+    */
     self._action('POST', EMULATOR_ROOT_URI + '/' + name, function (err, response, body) {
       if (err) {
         if (callback) {

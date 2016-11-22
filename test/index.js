@@ -362,6 +362,33 @@ describe('Cloud Functions Emulator Tests', function () {
     });
   });
 
+  it('Calling a function with bucket (cloud-storage) trigger for deletion', function (done) {
+    controller.deploy(TEST_MODULE, 'helloData', 'S', function (err) {
+      if (err) {
+        done(err);
+        return;
+      }
+	controller.call('helloData',
+			{ '--trigger-bucket': true,
+			  'file' : 'sample.mov',
+			  'resourceState' : 'not_exists'
+			}, function (err, body) {
+			    if (err) {
+				done(err);
+				return;
+			    }
+			    try {
+				chai.expect(body.data.resourceState).to.equal('not_exists');
+				chai.expect(body.data.name).to.equal('sample.mov');
+				done();
+			    } catch (e) {
+				done(e);
+			    }
+			});
+    });
+  });
+
+    
   it("Functions that throw exceptions don't crash the process", function (done) {
     controller.deploy(TEST_MODULE, 'helloThrow', 'B', function (err) {
       if (err) {
